@@ -1,7 +1,7 @@
 
 class Movies {
 
-  List<Movie> movies = new List();
+  List<Movie> listMovies = new List();
 
   Movies();
 
@@ -10,7 +10,7 @@ class Movies {
 
     for (var item in jsonList) {
       final movie = new Movie.fromJsonMap(item);
-      movies.add(movie);
+      listMovies.add(movie);
     }
   }
 
