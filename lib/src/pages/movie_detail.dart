@@ -9,8 +9,33 @@ class MovieDetail extends StatelessWidget {
     final Movie movie = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
-      body: Center(
-        child: Text(movie.title),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          _createAppBar(movie)
+        ],
+      )
+    );
+  }
+
+  Widget _createAppBar(Movie movie) {
+    return SliverAppBar(
+      elevation: 2.0,
+      backgroundColor: Colors.deepPurpleAccent,
+      expandedHeight: 200.0,
+      floating: false,
+      pinned: false,
+      flexibleSpace: FlexibleSpaceBar(
+        centerTitle: true,
+        title: Text(
+          movie.title,
+          style: TextStyle(color: Colors.white, fontSize: 16.0),
+        ),
+        background: FadeInImage(
+          image: NetworkImage(movie.getBackdropImg()),
+          placeholder: AssetImage('assets/img/loading.gif'),
+          fadeInDuration: Duration(milliseconds: 200),
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
