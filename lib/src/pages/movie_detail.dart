@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:movies/src/models/actors_model.dart';
 import 'package:movies/src/models/movie_model.dart';
+import 'package:movies/src/providers/movies_provider.dart';
 
 class MovieDetail extends StatelessWidget {
 
@@ -24,7 +26,8 @@ class MovieDetail extends StatelessWidget {
                 _movieDescription(movie),
                 _movieDescription(movie),
                 _movieDescription(movie),
-                _movieDescription(movie)
+                _movieDescription(movie),
+                _createCasting(movie)
               ]
             )
           )
@@ -97,6 +100,61 @@ class MovieDetail extends StatelessWidget {
       child: Text(
         movie.overview,
         textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget _createCasting(Movie movie) {
+    final movieProvider = new MoviesProvider();
+
+    return FutureBuilder(
+      future: movieProvider.getCast(movie.id.toString()),
+      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+        if (snapshot.hasData) {
+          return _createActorsPageView(snapshot.data);
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      }
+    );
+  }
+
+  Widget _createActorsPageView(List<Actor> actors) {
+    return SizedBox(
+      height: 200.0,
+      child: PageView.builder(
+        pageSnapping: false,
+        controller: PageController(
+          viewportFraction: 0.3,
+          initialPage: 1
+        ),
+        itemCount: actors.length,
+        itemBuilder: (context, index) => _actorCard(context, actors[index])
+      ),
+    );
+  }
+
+  Widget _actorCard(BuildContext context, Actor actor) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: FadeInImage(
+              height: 150.0,
+              fit: BoxFit.cover,
+              placeholder: AssetImage('assets/img/no-image.jpg'),
+              image: NetworkImage(actor.getPhoto())
+            ),
+          ),
+          Text(
+            actor.name,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.caption,
+          )
+        ],
       ),
     );
   }

@@ -48,7 +48,7 @@ class Actor {
 
   getPhoto() {
       if (profilePath == null) {
-        return 'https://innmind.com/assets/placeholders/no_avatar-3d6725770296b6a1cce653a203d8f85dcc5298945b71fa7360e3d9aa4a3fc054.svg';
+        return 'https://realgamingicons.com/img/users/noavatar.png';
       } else {
         return 'https://image.tmdb.org/t/p/w500/$profilePath';
       }
