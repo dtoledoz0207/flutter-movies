@@ -66,7 +66,7 @@ class Movie {
         title            = json["title"];
         voteAverage      = json["vote_average"].toDouble();
         overview         = json["overview"];
-        releaseDate      = DateTime.parse(json["release_date"]);
+        releaseDate      = (json.containsKey("release_date")) ? (json["release_date"] == null || json["release_date"] == "") ? DateTime.now() : DateTime.parse(json["release_date"]) : DateTime.now();
     }
 
     getPosterImg() {

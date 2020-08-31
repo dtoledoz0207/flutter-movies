@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:movies/src/providers/movies_provider.dart';
+import 'package:movies/src/models/movie_model.dart';
 
 class DataSearch extends SearchDelegate {
 
-  List movies = [
+  final moviesProvider = new MoviesProvider();
+
+  /*List movies = [
     'Ironman',
     'Superman',
     'Batman',
@@ -15,7 +19,7 @@ class DataSearch extends SearchDelegate {
   List lastMovies = [
     'Spiderman',
     'Daredevil'
-  ];
+  ];*/
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -54,7 +58,54 @@ class DataSearch extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     // These are the suggestions that appears when an user writes on the AppBar search
 
-    final suggestionList = (query.isEmpty) ?
+    if (query.isEmpty) {
+      return Container();
+    }
+
+    return FutureBuilder(
+      future: moviesProvider.searchMovie(query),
+      builder: (BuildContext context, AsyncSnapshot<List<Movie>> snapshot) {
+        if (snapshot.hasData) {
+
+          final movies = snapshot.data;
+
+          return ListView(
+            children:
+              movies.map((movie) {
+                return ListTile(
+                  leading: FadeInImage(
+                    placeholder: AssetImage('assets/img/no-image.jpg'),
+                    image: NetworkImage(movie.getPosterImg()),
+                    width: 50.0,
+                    fit: BoxFit.contain,
+                  ),
+                  title: Text(movie.title),
+                  subtitle: Row(
+                    children: <Widget>[
+                      Icon(Icons.star, color: Colors.yellow),
+                      Text(movie.voteAverage.toString())
+                    ],
+                  ),
+                  onTap: () {
+                    close(context, null);
+                    movie.uniqueId = '${movie.id}-search';
+                    Navigator.pushNamed(context, 'detail', arguments: movie);
+                  },
+                );
+              }).toList(),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      }
+    );
+
+
+
+
+    /*final suggestionList = (query.isEmpty) ?
                             lastMovies :
                             movies.where((movie) => movie.toLowerCase().startsWith(query.toLowerCase())).toList();
 
@@ -67,7 +118,7 @@ class DataSearch extends SearchDelegate {
           onTap: (){},
         );
       }
-    );
+    );*/
   }
 
 }
