@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:movies/src/providers/movies_provider.dart';
 import 'package:movies/src/models/movie_model.dart';
@@ -43,7 +45,11 @@ class DataSearch extends SearchDelegate {
         progress: transitionAnimation
       ),
       onPressed: () {
-        close(context, null);
+        FocusScope.of(context).unfocus();
+        final timer = Future.delayed(Duration(milliseconds: 500), () {});
+        timer.then((value) {
+          close(context, null);
+        });
       }
     );
   }
